@@ -11,12 +11,13 @@ import com.example.filmdairy.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
-    public ArrayList<Movie> movies;
+    public List<Movie> movies;
 
-    public void setData(ArrayList<Movie> movieList) {
+    public void setData(List<Movie> movieList) {
         movies = movieList;
         notifyDataSetChanged();
     }

@@ -5,15 +5,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.filmdairy.R;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SeriesActivity extends AppCompatActivity {
 
     public RecyclerView seriesRv;
-    public ArrayList<Series> seriesList;
+    public ArrayList<Series> seriesList = new ArrayList<>();
     public SeriesAdapter seriesAdapter;
 
     @Override
@@ -21,24 +27,26 @@ public class SeriesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series);
         getSupportActionBar().setTitle("Series");
-        setupData();
         setupSeriesRecyclerView();
+        fetchData();
     }
 
-    public void setupData() {
-        seriesList = new ArrayList<>();
+    public void fetchData() {
+        SeriesApi seriesApi = new SeriesApi();
+        SeriesService seriesService = seriesApi.createSeriesService();
+        Call<List<Series>> call = seriesService.fetchSeries();
+        call.enqueue(new Callback<List<Series>>() {
+            @Override
+            public void onResponse(Call<List<Series>> call, Response<List<Series>> response) {
+                List<Series> series = response.body();
+                seriesAdapter.setData(series);
+            }
 
-        Series panda = new Series();
-        panda.seriesId = 1;
-        panda.imageUrl = "https://occ-0-1556-1007.1.nflxso.net/dnm/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABduFRBhx6t-Dhqq_nz4teWtFQs7rpEnkYggmaKnJ1jjtbaGGqVSTZi1OfHu6DkmLzO7d5bXlhKYE1Eu6jrJoaO64l0uKJY2YEHJb.jpg?r=109";
-        panda.title = "Kung Fu Panda Movie Series";
-        seriesList.add(panda);
-
-        Series harry = new Series();
-        harry.seriesId = 2;
-        harry.imageUrl = "https://static.wikia.nocookie.net/harrypotter/images/3/36/Harry-potter-films.png/revision/latest/scale-to-width-down/1000?cb=20110722151247";
-        harry.title = "Harry Potter Movie Series";
-        seriesList.add(harry);
+            @Override
+            public void onFailure(Call<List<Series>> call, Throwable t) {
+                Toast.makeText(SeriesActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void setupSeriesRecyclerView() {
