@@ -44,7 +44,7 @@ public class MoviesActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Movie>> call, Throwable t) {
-                Toast.makeText(MoviesActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MoviesActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         });
     }
